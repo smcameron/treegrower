@@ -27,9 +27,9 @@ import random
 import math
 import time
 
-
 screen_width = 1000 
-screen_height = 800
+screen_height = 600
+niterations = 500
 
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -55,13 +55,23 @@ def hypot(p1, p2):
 def translate_point(p, x, y):
    return (p[0] + x, p[1] + y);
 
+def deg_to_rad(angle):
+   return angle * math.pi / 180.0;
+
+cellindex = 0;
+
 class cell:
-   def __init__(self, x, y, size, angle):
+   def __init__(self, x, y, size, angle, parent):
+      global cellindex;
       self.x = x;
       self.y = y;
       self.age = 0;
       self.size = size;
       self.angle = angle;
+      self.parent = parent;
+      self.nchildren = 0;
+      self.index = cellindex;
+      cellindex = cellindex + 1;
    def draw(self):
       p1 = rotate_point((-1 * self.size, -1 * self.size), (0, 0), self.angle);
       p2 = rotate_point((-1 * self.size, 1 * self.size), (0, 0), self.angle);
@@ -76,11 +86,49 @@ class cell:
       pygame.draw.line(screen, black, p2, p3, 1);
       pygame.draw.line(screen, black, p3, p4, 1);
       pygame.draw.line(screen, black, p4, p1, 1);
-      
+   def grow(self):
+      if (self.age < 300):
+         self.size += 0.02;
+      if (self.age < 100):
+         chance = random.randint(0, 1000);
+         if ((chance < 80 and self.nchildren < 2 and self.age < 10) or (chance < 100 and self.nchildren < 1 and self.age < 30)):
+	    random_angle = self.angle + deg_to_rad(-15.0 + random.randint(0, 30));
+	    tx = self.x + math.sin(self.angle) * self.size * 2;
+	    ty = self.y + -math.cos(self.angle) * self.size * 2;
+            newcell = cell(tx, ty, 1, random_angle, self.index);
+	    add_cell(newcell);
+            self.nchildren = self.nchildren + 1;
+      if (self.parent >= 0):
+         p = cells[self.parent];
+         self.x = p.x + math.sin(p.angle) * p.size * 2;
+         self.y = p.y + -math.cos(p.angle) * p.size * 2;
+      self.age = self.age + 1;
+
+cells = [];
+
+def add_cell(newcell):
+   cells.append(newcell);
+
+def draw_cells():
+   for c in cells:
+      c.draw();
+
+def grow_cells():
+   for c in cells:
+      c.grow();
 
 screen.fill(white);   
-x = cell(100, 100, 20, 10 * 3.1415927 / 180.0);
-pygame.draw.line(screen, black, (0,0), (100,100), 1);
-x.draw();
-pygame.display.update();
-time.sleep(5);
+
+add_cell(cell(screen_width / 2.0, screen_height * 0.9, 0.1, 0.0, -1));
+
+lastcell = cells[0];
+
+for i in range(0, niterations):
+   grow_cells();
+   if ((i % 15) == 0):
+      screen.fill(white);   
+      draw_cells();
+      pygame.display.update();
+
+time.sleep(10);
+
