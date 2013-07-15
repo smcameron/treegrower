@@ -30,11 +30,19 @@ import time
 screen_width = 1000 
 screen_height = 600
 niterations = 500
+first_branch_chance = 100 # out of 1000
+second_branch_chance = 80 # out of 1000
+second_branch_max_age = 10
+branch_angle = 15
+draw_every_nth_frame = 15
+max_growth_age = 300
+first_branch_max_age = 30
+size_growth_rate = 0.02
+size_growth_age_limit = 300
+cell_offset = 2.0
 
 black = (0, 0, 0)
 white = (255, 255, 255)
-nlayers = 10;
-linespacing = 20;
 
 screen = pygame.display.set_mode([screen_width, screen_height])
 pygame.display.update()
@@ -87,21 +95,21 @@ class cell:
       pygame.draw.line(screen, black, p3, p4, 1);
       pygame.draw.line(screen, black, p4, p1, 1);
    def grow(self):
-      if (self.age < 300):
-         self.size += 0.02;
-      if (self.age < 100):
+      if (self.age < size_growth_age_limit):
+         self.size += size_growth_rate;
+      if (self.age < first_branch_max_age or self.age < second_branch_max_age):
          chance = random.randint(0, 1000);
-         if ((chance < 80 and self.nchildren < 2 and self.age < 10) or (chance < 100 and self.nchildren < 1 and self.age < 30)):
-	    random_angle = self.angle + deg_to_rad(-15.0 + random.randint(0, 30));
-	    tx = self.x + math.sin(self.angle) * self.size * 2;
-	    ty = self.y + -math.cos(self.angle) * self.size * 2;
+         if ((chance < second_branch_chance and self.nchildren < 2 and self.age < second_branch_max_age) or (chance < first_branch_chance and self.nchildren < 1 and self.age < first_branch_max_age)):
+	    random_angle = self.angle + deg_to_rad(-branch_angle + random.randint(0, branch_angle * 2));
+	    tx = self.x + math.sin(self.angle) * self.size * cell_offset;
+	    ty = self.y + -math.cos(self.angle) * self.size * cell_offset;
             newcell = cell(tx, ty, 1, random_angle, self.index);
 	    add_cell(newcell);
             self.nchildren = self.nchildren + 1;
       if (self.parent >= 0):
          p = cells[self.parent];
-         self.x = p.x + math.sin(p.angle) * p.size * 2;
-         self.y = p.y + -math.cos(p.angle) * p.size * 2;
+         self.x = p.x + math.sin(p.angle) * p.size * cell_offset;
+         self.y = p.y + -math.cos(p.angle) * p.size * cell_offset;
       self.age = self.age + 1;
 
 cells = [];
@@ -119,13 +127,15 @@ def grow_cells():
 
 screen.fill(white);   
 
-add_cell(cell(screen_width / 2.0, screen_height * 0.9, 0.1, 0.0, -1));
+add_cell(cell(screen_width / 2.0, screen_height * 0.9, 0.05, 0.0, -1));
+add_cell(cell(screen_width / 4.0, screen_height * 0.9, 0.05, 0.0, -1));
+add_cell(cell(3.0 * screen_width / 4.0, screen_height * 0.9, 0.05, 0.0, -1));
 
 lastcell = cells[0];
 
 for i in range(0, niterations):
    grow_cells();
-   if ((i % 15) == 0):
+   if ((i % draw_every_nth_frame) == 0):
       screen.fill(white);   
       draw_cells();
       pygame.display.update();
