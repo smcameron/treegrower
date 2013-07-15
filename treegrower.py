@@ -42,7 +42,7 @@ size_growth_age_limit = 300
 cell_offset = 2.0
 max_age = 300 
 
-black = (100, 100, 100)
+black = (20, 20, 22)
 white = (255, 255, 255)
 
 screen = pygame.display.set_mode([screen_width, screen_height])
@@ -128,7 +128,13 @@ def grow_cells():
    for c in cells:
       c.grow();
 
-screen.fill(white);   
+def clear_the_screen():
+   # screen.fill(white);
+   nrects = 50   
+   rh = screen_height / nrects;
+   for i in range(0, nrects):
+      r = pygame.Rect(0, rh * i, screen_width, rh);
+      pygame.draw.rect(screen, (10 + i * 2, 10 + i * 2, 90 + i), r, 0);
 
 add_cell(cell(screen_width / 2.0, screen_height * 0.9, 0.05, 0.0, -1));
 add_cell(cell(screen_width / 4.0, screen_height * 0.9, 0.05, 0.0, -1));
@@ -139,7 +145,8 @@ lastcell = cells[0];
 for i in range(0, niterations):
    grow_cells();
    if ((i % draw_every_nth_frame) == 0):
-      screen.fill(white);   
+      clear_the_screen();
+      # screen.fill(white);   
       draw_cells();
       pygame.display.update();
 
