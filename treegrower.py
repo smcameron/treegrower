@@ -98,7 +98,7 @@ def draw_cell(x, y, p1, p2, p3, p4, age):
       y1 = p1[1] + i * dy;
       y2 = p4[1] + i * dy;
       pygame.draw.line(screen, linecolor, (x1, y1), (x2, y2), 1);
-      if (age < 3):
+      if (age < 2):
          draw_leaves(x, y, 2, age);
     
 
