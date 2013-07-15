@@ -71,20 +71,20 @@ cellindex = 0;
 
 def draw_leaves(x, y, n, age):
     g = random.randint(0, 50) - age;
-    c = (40, 80 + g, 40);
+    c = (int(0.15 * 40), int(0.15 * (80 + g)), int(0.15 * 40));
     for i in range(0, n):
        tx = x + random.randint(0, 80) - 40;
        ty = y + random.randint(0, 80) - 40;
        pygame.draw.circle(screen, c, (int(tx), int(ty)), 3, 0);
 
 def draw_cell(x, y, p1, p2, p3, p4, age):
-   nlines = 10;
+   nlines = 20;
    dx = (p2[0] - p1[0]) / float(nlines);
    dy = (p2[1] - p1[1]) / float(nlines);
    for i in range(0, nlines):
-      r =  int(((age + 50) * 150.0 + random.randint(0, 50)) / (max_age / 1.5));
-      g =  int(((age + 50) * 150.0 + random.randint(0, 50)) / (max_age / 1.5));
-      b =  int(((age + 50) * 150.0 + random.randint(0, 50)) / (max_age / 1.5));
+      r =  int(0.15 * ((age + 50) * 150.0 + random.randint(0, 50)) / (max_age / 1.5));
+      g =  int(0.15 * ((age + 50) * 150.0 + random.randint(0, 50)) / (max_age / 1.5));
+      b =  int(0.15 * ((age + 50) * 150.0 + random.randint(0, 50)) / (max_age / 1.5));
       if (r > 200):
          r = 200;
       if (g > 200):
@@ -99,7 +99,7 @@ def draw_cell(x, y, p1, p2, p3, p4, age):
       y2 = p4[1] + i * dy;
       pygame.draw.line(screen, linecolor, (x1, y1), (x2, y2), 1);
       if (age < 2):
-         draw_leaves(x, y, 2, age);
+         draw_leaves(x, y, 1, age);
     
 
 class cell:
@@ -168,11 +168,14 @@ def clear_the_screen():
    rh = screen_height / nrects;
    for i in range(0, nrects):
       r = pygame.Rect(0, rh * i, screen_width, rh);
-      pygame.draw.rect(screen, (10 + i * 2, 10 + i * 2, 90 + i), r, 0);
+      if (i < 0.90 * nrects):
+         pygame.draw.rect(screen, (10 + (nrects - i) * 4, 10 + (nrects - i) * 2, 90 + i), r, 0);
+      else:
+         pygame.draw.rect(screen, (0, 0, 0), r, 0);
 
 add_cell(cell(screen_width / 2.0, screen_height * 0.9, 0.05, 0.0, -1));
-# add_cell(cell(screen_width / 4.0, screen_height * 0.9, 0.05, 0.0, -1));
-# add_cell(cell(3.0 * screen_width / 4.0, screen_height * 0.9, 0.05, 0.0, -1));
+add_cell(cell(screen_width / 4.0, screen_height * 0.9, 0.05, 0.0, -1));
+add_cell(cell(3.0 * screen_width / 4.0, screen_height * 0.9, 0.05, 0.0, -1));
 
 lastcell = cells[0];
 
