@@ -34,7 +34,7 @@ first_branch_chance = 100 # out of 1000
 second_branch_chance = 80 # out of 1000
 second_branch_max_age = 10
 branch_angle = 10 
-draw_every_nth_frame = 1
+draw_every_nth_frame = 3
 max_growth_age = 300
 first_branch_max_age = 30
 size_growth_rate = 0.02
@@ -69,6 +69,29 @@ def deg_to_rad(angle):
 
 cellindex = 0;
 
+def draw_cell(p1, p2, p3, p4, age):
+   nlines = 10;
+   dx = (p2[0] - p1[0]) / float(nlines);
+   dy = (p2[1] - p1[1]) / float(nlines);
+   for i in range(0, nlines):
+      r =  int(((age + 50) * 150.0 + random.randint(0, 50)) / (max_age / 1.5));
+      g =  int(((age + 50) * 150.0 + random.randint(0, 50)) / (max_age / 1.5));
+      b =  int(((age + 50) * 150.0 + random.randint(0, 50)) / (max_age / 1.5));
+      if (r > 200):
+         r = 200;
+      if (g > 200):
+         g = 200;
+      if (b > 200):
+         b = 200;
+      linecolor = (r, g, b);
+      linecolor = (r, g, b);
+      x1 = p1[0] + i * dx;
+      x2 = p4[0] + i * dx;
+      y1 = p1[1] + i * dy;
+      y2 = p4[1] + i * dy;
+      pygame.draw.line(screen, linecolor, (x1, y1), (x2, y2), 1);
+    
+
 class cell:
    def __init__(self, x, y, size, angle, parent):
       global cellindex;
@@ -91,10 +114,11 @@ class cell:
       p2 = translate_point(p2, self.x, self.y);
       p3 = translate_point(p3, self.x, self.y);
       p4 = translate_point(p4, self.x, self.y);
-      pygame.draw.line(screen, black, p1, p2, 1);
+      # pygame.draw.line(screen, black, p1, p2, 1);
       pygame.draw.line(screen, black, p2, p3, 1);
-      pygame.draw.line(screen, black, p3, p4, 1);
+      # pygame.draw.line(screen, black, p3, p4, 1);
       pygame.draw.line(screen, black, p4, p1, 1);
+      draw_cell(p1, p2, p3, p4, self.age);
    def grow(self):
       if (self.age > max_age):
          return;
