@@ -27,21 +27,22 @@ import random
 import math
 import time
 
-screen_width = 1000 
-screen_height = 600
+screen_width = 1350 
+screen_height = 750
 niterations = 500
 first_branch_chance = 100 # out of 1000
 second_branch_chance = 80 # out of 1000
 second_branch_max_age = 10
-branch_angle = 15
-draw_every_nth_frame = 15
+branch_angle = 10 
+draw_every_nth_frame = 1
 max_growth_age = 300
 first_branch_max_age = 30
 size_growth_rate = 0.02
 size_growth_age_limit = 300
 cell_offset = 2.0
+max_age = 300 
 
-black = (0, 0, 0)
+black = (100, 100, 100)
 white = (255, 255, 255)
 
 screen = pygame.display.set_mode([screen_width, screen_height])
@@ -95,6 +96,8 @@ class cell:
       pygame.draw.line(screen, black, p3, p4, 1);
       pygame.draw.line(screen, black, p4, p1, 1);
    def grow(self):
+      if (self.age > max_age):
+         return;
       if (self.age < size_growth_age_limit):
          self.size += size_growth_rate;
       if (self.age < first_branch_max_age or self.age < second_branch_max_age):
