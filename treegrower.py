@@ -33,14 +33,14 @@ niterations = 500
 first_branch_chance = 100 # out of 1000
 second_branch_chance = 80 # out of 1000
 second_branch_max_age = 10
-branch_angle = 10 
-draw_every_nth_frame = 3
-max_growth_age = 300
+branch_angle = 18 
+draw_every_nth_frame = 10
+max_growth_age = 400
 first_branch_max_age = 30
-size_growth_rate = 0.02
-size_growth_age_limit = 300
+size_growth_rate = 0.025
+size_growth_age_limit = 400
 cell_offset = 2.0
-max_age = 300 
+max_age = 400 
 
 black = (20, 20, 22)
 white = (255, 255, 255)
@@ -69,7 +69,15 @@ def deg_to_rad(angle):
 
 cellindex = 0;
 
-def draw_cell(p1, p2, p3, p4, age):
+def draw_leaves(x, y, n, age):
+    g = random.randint(0, 50) - age;
+    c = (40, 80 + g, 40);
+    for i in range(0, n):
+       tx = x + random.randint(0, 80) - 40;
+       ty = y + random.randint(0, 80) - 40;
+       pygame.draw.circle(screen, c, (int(tx), int(ty)), 3, 0);
+
+def draw_cell(x, y, p1, p2, p3, p4, age):
    nlines = 10;
    dx = (p2[0] - p1[0]) / float(nlines);
    dy = (p2[1] - p1[1]) / float(nlines);
@@ -90,6 +98,8 @@ def draw_cell(p1, p2, p3, p4, age):
       y1 = p1[1] + i * dy;
       y2 = p4[1] + i * dy;
       pygame.draw.line(screen, linecolor, (x1, y1), (x2, y2), 1);
+      if (age < 3):
+         draw_leaves(x, y, 2, age);
     
 
 class cell:
@@ -118,7 +128,7 @@ class cell:
       pygame.draw.line(screen, black, p2, p3, 1);
       # pygame.draw.line(screen, black, p3, p4, 1);
       pygame.draw.line(screen, black, p4, p1, 1);
-      draw_cell(p1, p2, p3, p4, self.age);
+      draw_cell(self.x, self.y, p1, p2, p3, p4, self.age);
    def grow(self):
       if (self.age > max_age):
          return;
@@ -161,8 +171,8 @@ def clear_the_screen():
       pygame.draw.rect(screen, (10 + i * 2, 10 + i * 2, 90 + i), r, 0);
 
 add_cell(cell(screen_width / 2.0, screen_height * 0.9, 0.05, 0.0, -1));
-add_cell(cell(screen_width / 4.0, screen_height * 0.9, 0.05, 0.0, -1));
-add_cell(cell(3.0 * screen_width / 4.0, screen_height * 0.9, 0.05, 0.0, -1));
+# add_cell(cell(screen_width / 4.0, screen_height * 0.9, 0.05, 0.0, -1));
+# add_cell(cell(3.0 * screen_width / 4.0, screen_height * 0.9, 0.05, 0.0, -1));
 
 lastcell = cells[0];
 
