@@ -34,10 +34,10 @@ first_branch_chance = 100 # out of 1000
 second_branch_chance = 80 # out of 1000
 second_branch_max_age = 10
 branch_angle = 18 
-draw_every_nth_frame = 10
+draw_every_nth_frame = 30
 max_growth_age = 400
 first_branch_max_age = 30
-size_growth_rate = 0.025
+size_growth_rate = 1.007
 size_growth_age_limit = 400
 cell_offset = 2.0
 max_age = 400 
@@ -133,7 +133,7 @@ class cell:
       if (self.age > max_age):
          return;
       if (self.age < size_growth_age_limit):
-         self.size += size_growth_rate;
+         self.size *= size_growth_rate;
       if (self.age < first_branch_max_age or self.age < second_branch_max_age):
          chance = random.randint(0, 1000);
          if ((chance < second_branch_chance and self.nchildren < 2 and self.age < second_branch_max_age) or (chance < first_branch_chance and self.nchildren < 1 and self.age < first_branch_max_age)):
