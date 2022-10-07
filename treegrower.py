@@ -180,6 +180,13 @@ add_cell(cell(3.0 * screen_width / 4.0, screen_height * 0.9, 0.05, 0.0, -1));
 lastcell = cells[0];
 
 for i in range(0, niterations):
+   for event in pygame.event.get():
+      if event.type == pygame.QUIT:  # Close your program if the user wants to quit.
+         raise SystemExit;
+      elif event.type == pygame.KEYDOWN:
+         if event.key == pygame.K_q:
+            pygame.quit();
+            exit(0);
    grow_cells();
    if ((i % draw_every_nth_frame) == 0):
       clear_the_screen();
